@@ -8,9 +8,8 @@ import firebase from "firebase"
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth"
 import logo from './logo.png'
 import logo2 from './descarga.png'
-
-const API_KEY= 'AIzaSyCcjeEs6Tz2U4KOoHJFGdAGeq1xDzZzm9w'
-
+import {  notification } from 'antd';
+import moment from 'moment'
 
 firebase.initializeApp({
   apiKey: "AIzaSyD4BMihfaM1KZ8-ImKezsOsaRHN2Mjaq3M",
@@ -21,6 +20,10 @@ firebase.initializeApp({
   messagingSenderId: "583007799006",
   appId: "1:583007799006:web:912c57569ee63820"
   })
+
+  const date =moment().format('MMMM Do YYYY, h:mm:ss a');
+  const API_KEY = process.env.REACT_APP_API_KEY;
+
 class App extends Component {
   constructor(props){
     super(props);
@@ -30,19 +33,30 @@ class App extends Component {
         selectedVideo: null,
         user: null
     };
-    this.videoSearch('PartnerHero');
+
+  this.videoSearch('Healthday @ PartnerHero Honduras');
 }
 handleChange(e) {
   /* ... */
 }
 videoSearch(searchTerm) {
-  YTSearch({key: API_KEY, term: searchTerm}, (data) => {
-    console.log(data);
-      this.setState({ 
-          videos: data,
-          selectedVideo: data[0]
-      });
-  });
+  if( this.state.search ) {
+    YTSearch({ key: API_KEY, searchTerm }, (data) => {
+        try {
+            if( data && data.data && data.data.error.message ) {
+                console.log(data);
+            }
+            this.setState({ videos: data, selectedVideo: data[0] });
+            console.log( this.state.videos );
+        } catch( err ){
+            notification['error']({
+                message: "Daily Limit Exceeded",
+                description: "Youtube data API daily limit have exceeded",
+            })
+        }
+
+    });
+} 
 }
 
 uiConfig ={
@@ -58,7 +72,6 @@ uiConfig ={
 
 componentDidMount() {
   firebase.auth().onAuthStateChanged((user) => {
-
       this.setState({ user:!!user });
   });
 }
@@ -72,16 +85,24 @@ render(){
       <img className="partnerhero" src={logo} alt="Logo" />
       <h5 className="signedin">Signed in!</h5>
        <button className="signout" onClick={()=>firebase.auth().signOut()}>Sign Out</button>
-
         
         <h2 className="welcome">Welcome {firebase.auth().currentUser.displayName}!</h2>
+        <moment>{date}</moment>
+        <div style={{ "display": "flex", "flexDirection": "column"  }}>
+
         <SearchBar onSearchTermChange={searchTerm => this.videoSearch(searchTerm)}/>
+        <div style={{ "display" : "flex" }}>
         <VideoDetail video={this.state.selectedVideo}/>
-        <VideoList 
-          onVideoSelect={userSelected => this.setState({selectedVideo: userSelected})}
-          videos={this.state.videos} />  
+          <VideoList 
+            onVideoSelect={userSelected => this.setState({selectedVideo: userSelected})}
+            videos={this.state.videos} />  
+        </div>
+        </div>
         </div>  
       </span>
+
+
+
      ):(
        <div>
       <h1 classame="partnerhero">PartnerHero</h1>

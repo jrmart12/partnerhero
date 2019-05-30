@@ -1,5 +1,4 @@
 import React from 'react';
-
 class SearchBar extends React.Component{
     constructor(props){
         super(props);
@@ -15,7 +14,7 @@ class SearchBar extends React.Component{
 
     render(){
         return (
-            <div className="search-bar">
+            <div className="search-bar"style={{ "textAlign": "center",  "padding": "20px" }}>
                 <input                
                     value={this.state.term}
                     onChange={this.onInputChange} 

@@ -20,7 +20,7 @@ code {
   width: 100%;
 }
 .search-bar input{
-  width: 50%;
+  width: 30%;
 }
 .signout{
   margin-left: 1750px;
@@ -38,9 +38,9 @@ code {
   margin-left: -1750px;
 }
 .video-item img{
-  max-width: 64px;
-  margin-left: auto;
-  margin-right: auto;
+  display: flex !important;
+  align-items: center !important;
+  cursor: pointer;
 }
 
 .video-detail .details{
@@ -54,15 +54,11 @@ code {
 
 .list-group-item{
   cursor: pointer;
-  margin-left: auto;
-  margin-top: auto;
+  max-width: 200px;
+  max-height: 250px ;
 
 }
-.list-group{
-  margin-left: 610px;
-  margin-top: -465px;
-  cursor: pointer;
-}
+
 .list-group-item:hover{
   background-color: #eee;
 }
